@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+}
+@Html.Partial("_Logout")
+<h3>Welcome </h3>@ViewData["data"]
+
+
+<p>
+    @Html.ActionLink("Update Profile", "MyProfile","Home")||
+    @Html.ActionLink("Address Book", "Create")
+</p>
+
