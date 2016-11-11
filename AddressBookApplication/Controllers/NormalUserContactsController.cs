@@ -16,7 +16,7 @@ namespace AddressBookApplication.Controllers
     {
         private AddressBookEntities db = new AddressBookEntities();
 
-     
+
         public ActionResult Main()
         {
             return View();
@@ -25,11 +25,11 @@ namespace AddressBookApplication.Controllers
         // GET: NormalUser
         public ActionResult Index()
         {
-            var id = TempData["id"];
+            var id = Session["id"];
             return View(db.ContactDetails.ToList().Where(x => x.UserId == Convert.ToInt64(id)).ToList());
-         
+
         }
-     
+
 
         // GET: NormalUser/Create
         public ActionResult Create()
@@ -44,7 +44,7 @@ namespace AddressBookApplication.Controllers
         [ValidateInput(false)]
         public ActionResult Create([Bind(Include = "ContactId,UserId,FirstName,LastName,PhoneNumber,StreetName,City,Province,PostalCode,Country,Note")] ContactDetail contact)
         {
-           
+            contact.UserId = (int)Session["id"]; // TO Create Contacts according to 
             if (ModelState.IsValid)
             {
                 db.ContactDetails.Add(contact);
@@ -112,7 +112,7 @@ namespace AddressBookApplication.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-       
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

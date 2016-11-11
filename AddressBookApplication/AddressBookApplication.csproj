@@ -599,6 +599,8 @@
     <Content Include="Views\NormalUserContacts\Main.cshtml" />
     <Content Include="Views\Admin\Main.cshtml" />
     <Content Include="Views\Shared\_Logout.cshtml" />
+    <Content Include="Views\Home\MyProfile.cshtml" />
+    <Content Include="Views\Home\UpdatePassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

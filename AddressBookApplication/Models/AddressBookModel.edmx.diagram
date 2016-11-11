@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="96f61dbdcc0f4b2fbd2ec78f3b1122a8" Name="Diagram1">
+      <Diagram DiagramId="0bbef0e36491443ba8b7198ae0b99b93" Name="Diagram1">
         <EntityTypeShape EntityType="AddressBookModel.ContactDetail" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="AddressBookModel.UserDetail" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
       </Diagram>

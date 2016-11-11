@@ -67,8 +67,8 @@ namespace AddressBookApplication.Controllers
 
 
                 result = db.LoginCheck(Email, encryptPassword).SingleOrDefault();
-               // ViewData["data"] = result.FirstName;
-              
+                // ViewData["data"] = result.FirstName;
+
                 if (result == null)
                 {
                     ModelState.AddModelError("", "Invaild Email Or Password");
@@ -78,7 +78,7 @@ namespace AddressBookApplication.Controllers
                     if (result.Email == Email)
                     {
                         Session["id"] = result.UserId;
-                      
+
                         if (result.UserInfo == null)
                         {
 
@@ -103,7 +103,7 @@ namespace AddressBookApplication.Controllers
             //  Response.Write(comp);
             //  return View(userDetail);
         }
-        
+
 
         #region methods
 
@@ -308,6 +308,74 @@ namespace AddressBookApplication.Controllers
             return string.Empty;
         }
         #endregion
-        
+        //TO update profile when loged in as Normal User
+        public ActionResult MyProfile()
+        {
+            long? id = Convert.ToInt64(Session["id"]);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            UserDetail userDetail = db.UserDetails.Find(id);
+            if (userDetail == null)
+            {
+                return HttpNotFound();
+            }
+            return View(userDetail);
+            // return RedirectToAction("Login");
+        }
+
+
+        public ActionResult UpdatePassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult UpdatePassword(string Password, string confirmPassword)
+        {
+            long id = Convert.ToInt64(Session["id"]);
+            UserDetail userDetail = db.UserDetails.Find(id);
+            if (Password == confirmPassword)
+            {
+                keyBytes = ComputeHash(userDetail.Email, Password, HashName.SHA256);
+
+                string encryptPassword = Encrypt(Password, keyBytes, string.Empty);
+                userDetail.Password = encryptPassword;
+
+                db.Entry(userDetail).State = EntityState.Modified;
+                db.SaveChanges();
+
+            }
+            else
+            {
+                ModelState.AddModelError("", "New Password and Confirm Password are not same");
+            }
+            return View();
+        }
+        // Save changes when User click save button to edit his/her profile details
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MyProfile([Bind(Include = "UserId,FirstName,LastName,Email,Password")] UserDetail userDetail)
+        {
+            if (ModelState.IsValid)
+            {
+                //db.Entry(userDetail).State = EntityState.Modified;
+                //db.SaveChanges();
+                var obj = db.UserDetails.Find(userDetail.UserId);
+                obj.FirstName = userDetail.FirstName;
+                obj.LastName = userDetail.LastName;
+                obj.Email = userDetail.Email;
+                db.SaveChanges();
+
+                // return RedirectToAction("Index");
+                return RedirectToAction("Main", "NormalUserContacts");
+            }
+            else
+            {
+                return View(userDetail);
+            }
+        }
+
+
     }
 }
