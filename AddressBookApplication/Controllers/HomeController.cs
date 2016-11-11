@@ -104,6 +104,39 @@ namespace AddressBookApplication.Controllers
             //  return View(userDetail);
         }
 
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "UserId,Email,Password,FirstName,LastName,UserInfo")]UserDetail userDetail)
+        {
+            if (ModelState.IsValid)
+            {
+
+
+                string result = db.EmailCheck(userDetail.Email).SingleOrDefault();
+                if (result == userDetail.Email)
+                {
+                    ModelState.AddModelError("", "User Already Exists,Please Login");
+                }
+                else
+                {
+                    keyBytes = ComputeHash(userDetail.Email, userDetail.Password, HashName.SHA256);
+
+                    string encryptPassword = Encrypt(userDetail.Password, keyBytes, string.Empty);
+                    userDetail.Password = encryptPassword;
+
+                    db.UserDetails.Add(userDetail);
+                    db.SaveChanges();
+
+                    return RedirectToAction("Login", "Home");
+                }
+            }
+            return View();
+        }
 
         #region methods
 

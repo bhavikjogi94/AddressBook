@@ -78,9 +78,21 @@ namespace AddressBookApplication.Controllers
         public ActionResult Edit([Bind(Include = "ContactId,UserId,FirstName,LastName,PhoneNumber,StreetName,City,Province,PostalCode,Country,Note")] ContactDetail contact)
         {
             if (ModelState.IsValid)
-            {
+            {   //db.Entry(contact).State = EntityState.Modified;
                 string str = contact.Note;
-                db.Entry(contact).State = EntityState.Modified;
+                var obj = db.ContactDetails.Find(contact.ContactId);
+                contact.UserId = obj.UserId;
+                obj.FirstName = contact.FirstName;
+                obj.LastName = contact.LastName;
+                obj.UserId = contact.UserId;
+                obj.PhoneNumber = contact.PhoneNumber;
+                obj.StreetName = contact.StreetName;
+                obj.City = contact.City;
+                obj.Province = contact.Province;
+                obj.PostalCode = contact.PostalCode;
+                obj.Country = contact.Country;
+                obj.Note = contact.Note;
+                
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
