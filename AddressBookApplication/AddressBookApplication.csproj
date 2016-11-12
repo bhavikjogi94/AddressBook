@@ -612,6 +612,8 @@
     <Content Include="Views\ManageContact\Edit.cshtml" />
     <Content Include="Views\ManageContact\Delete.cshtml" />
     <Content Include="Views\ManageContact\Index.cshtml" />
+    <Content Include="Views\Home\ForgetPassword.cshtml" />
+    <Content Include="Views\Home\ResetPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -409,6 +409,104 @@ namespace AddressBookApplication.Controllers
             }
         }
 
+        [AllowAnonymous]
+        public ActionResult ForgetPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult ForgetPassword(string Email)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = db.UserDetails.Where(m => m.Email == Email).SingleOrDefault();
+
+                if (user != null)
+                {
+                 
+            
+                // Generate the html link sent via email
+                string resetLink = "<a href='"
+                       + Url.Action("ResetPassword", "Home", new { rt = user.UserId }, "http")
+                       + "'>Reset Password Link</a>";
+
+                    // Email stuff
+                    string subject = "Reset your password ";
+                    string body = "You link: " + resetLink;
+                    string from = "jogibhavik94@gmail.com";
+                   
+                   
+                    
+                    SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+                    client.EnableSsl = true;
+                    client.Timeout = 10000;
+                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    client.UseDefaultCredentials = false;
+                    client.Credentials = new NetworkCredential(from, "jogi949494");
+                    MailMessage mail = new MailMessage();
+                    mail.From = new MailAddress(from);
+                    mail.To.Add(Email);
+                    mail.Subject = subject;
+                    mail.Body = resetLink;
+                    
+                    // Attempt to send the email
+                    try
+                    {
+                        client.Send(mail);
+                    }
+                    catch (Exception e)
+                    {
+                        ModelState.AddModelError("", "Issue sending email: " + e.Message);
+                    }
+                }
+                else // Email not found
+                {
+                   
+                    ModelState.AddModelError("", "No user found by that email.");
+                }
+            }
+            return View();
+        }
+        // GET: /Account/ResetPassword
+        [AllowAnonymous]
+        public ActionResult ResetPassword(string rt)
+        {
+            ResetPasswordViewModel model = new ResetPasswordViewModel();
+            model.ReturnToken = rt;
+            return View(model);
+        }
+        // POST: /Account/ResetPassword
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                
+                if (model.ReturnToken!=null)
+                {
+                    int UserId = Convert.ToInt32(model.ReturnToken);
+                    var userDetail = db.UserDetails.Where(m => m.UserId == UserId).SingleOrDefault();
+                    string password = model.Password;
+                    var a = new HomeController();
+                    string keyBytes = a.ComputeHash(userDetail.Email, password, HomeController.HashName.SHA256);
+                    string encryptPassword = a.Encrypt(password, keyBytes, string.Empty);
+                    userDetail.Password = encryptPassword;
+                    db.SaveChanges();
+                    ViewBag.Message = "Successfully Changed";
+                    
+                }
+                else
+                {
+                    ViewBag.Message = "Something went horribly wrong!";
+                }
+            }
+            
+            return RedirectToAction("Login", "Home");
+        }
 
     }
 }

@@ -11,18 +11,41 @@ namespace AddressBookApplication.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class ContactDetail
     {
+        //public int UserId { get; set; }
+        //public int ContactId { get; set; }
+        //public string FirstName { get; set; }
+        //public string LastName { get; set; }
+        //public long PhoneNumber { get; set; }
+        //public string StreetName { get; set; }
+        //public string City { get; set; }
+        //public string Province { get; set; }
+        //public string PostalCode { get; set; }
+        //public string Country { get; set; }
+        //public string Note { get; set; }
+
         public int UserId { get; set; }
         public int ContactId { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Phone Number Required")]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Not a valid Phone Number")]
         public long PhoneNumber { get; set; }
+        [Required]
         public string StreetName { get; set; }
+        [Required]
         public string City { get; set; }
+        [Required]
         public string Province { get; set; }
+        [Required]
         public string PostalCode { get; set; }
+        [Required]
         public string Country { get; set; }
         public string Note { get; set; }
     }
